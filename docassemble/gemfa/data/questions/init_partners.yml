@@ -1,0 +1,337 @@
+#! files with varbles and settings for the intervies. Varibles contain various response scales and data storage framework. Settings holds information on common terms, styling and layout (eg link to CSS sheet or bootstrap) etc..
+include:
+  - variables.yml
+  - settings.yml
+---
+#! Pyton files stored as da modules. Post.py dictates how data is stored and sent to Django db. Create_df.py is a script that transform da list to pandas df. 
+modules:
+  - .post
+  - .create_df
+
+---
+#! Pandas df is created with the da table 
+mandatory: True
+code: |
+  df = create_df(partner_results_table) #this is initatied in survey_variables - uses a DA table block but do not show it to the respondents.
+  results.object_type = Thing
+  results.there_are_any = True
+
+---
+#! First question block - NOTE that there has to be a varible "name"
+mandatory: True
+decoration: niras_logo
+question: |
+  <br><br>GEMFA Partner Response Form for Call-down opportunity<br>
+subquestion: |
+  Please fill in requested information below that aligns with your interest for the specific tenders. <br>
+  <hr>
+fields:
+  - note: <b>1. Enter the name of your organisation:</b>
+  - Organisation name: results[i].name.text
+    required: True
+
+  - note: <hr>
+
+  - note: <b>2. Which call-down opportunities are you interested in?</b>
+  - <b>Somalia - Programme performance, monitoring, evaluation and learning</b>: results[i].call_down_opp_somalia
+    required: True
+    input type: radio
+    choices:
+      - Interest to participate
+      - No interest
+  - Please describe your proposed role, e.g. services/areas of the contract you like to contribute to: results[i].proposed_role_somalia
+    input type: area
+    required: False
+    show if:
+      variable: results[i].call_down_opp_somalia
+      is: Interest to participate
+  - Describe your experience in the country(ies) of the contract : results[i].country_experiance_somalia
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_somalia
+      is: Interest to participate
+  - Describe your experience delivering contracts for this thematic area : results[i].thematic_area_somalia
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_somalia
+      is: Interest to participate
+
+  - note: <br><br>
+
+  - <b>Ocean Country Partnership Programme</b>: results[i].call_down_opp_ocean
+    required: True
+    input type: radio
+    choices:
+      - Interest to participate
+      - No interest
+  - Please describe your proposed role, e.g. services/areas of the contract you like to contribute to: results[i].proposed_role_ocean
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_ocean
+      is: Interest to participate
+  - Describe your experience in the country(ies) of the contract : results[i].country_experiance_ocean
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_ocean
+      is: Interest to participate
+  - Describe your experience delivering contracts for this thematic area : results[i].thematic_area_ocean
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_ocean
+      is: Interest to participate
+
+  - note: <br><br>
+
+  - <b>Global Mine Action Programme (GMAP 3) Monitoring, Evaluation and Learning</b>: results[i].call_down_opp_gmap3
+    required: True
+    input type: radio
+    choices:
+      - Interest to participate
+      - No interest
+  - Please describe your proposed role, e.g. services/areas of the contract you like to contribute to: results[i].proposed_role_gmap3
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_gmap3
+      is: Interest to participate
+  - Describe your experience in the country(ies) of the contract : results[i].country_experiance_gmap3
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_gmap3
+      is: Interest to participate
+  - Describe your experience delivering contracts for this thematic area : results[i].thematic_area_gmap3
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_gmap3
+      is: Interest to participate
+
+  - note: <br><br>
+
+  - <b>Sudan Independent Monitoring & Analysis Programme (SIMAP)</b>: results[i].call_down_opp_simap
+    required: True
+    input type: radio
+    choices:
+      - Interest to participate
+      - No interest
+  - Please describe your proposed role, e.g. services/areas of the contract you like to contribute to: results[i].proposed_role_simap
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_simap
+      is: Interest to participate
+  - Describe your experience in the country(ies) of the contract : results[i].country_experiance_simap
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_simap
+      is: Interest to participate
+  - Describe your experience delivering contracts for this thematic area : results[i].thematic_area_simap
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_simap
+      is: Interest to participate
+
+  - note: <br><br>
+
+  - <b>Nigeria Portfolio Monitoring, Evaluation and Learning Programme</b>: results[i].call_down_opp_nigeria
+    required: True
+    input type: radio
+    choices:
+      - Interest to participate
+      - No interest
+  - Please describe your proposed role, e.g. services/areas of the contract you like to contribute to: results[i].proposed_role_nigeria
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_nigeria
+      is: Interest to participate
+  - Describe your experience in the country(ies) of the contract : results[i].country_experiance_nigeria
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_nigeria
+      is: Interest to participate
+  - Describe your experience delivering contracts for this thematic area : results[i].thematic_area_nigeria
+    required: False
+    input type: area
+    show if:
+      variable: results[i].call_down_opp_nigeria
+      is: Interest to participate
+
+  - note: <hr>
+
+  - note: <b>3. Do you have any potential conflict of interest from being involved in this opportunity?</b>
+  - Potential conflict: results[i].potential_conflicts
+    input type: radio
+    choices:
+      - Yes
+      - No
+  - Please elaborate on your potential conflict of interest below: results[i].potential_conflicts_open
+    required: False
+    input type: area
+    show if:
+      variable: results[i].potential_conflicts
+      is: Yes
+
+  - note: <hr>
+
+  - note: <b>4. Any questions or comments?/<b>
+  - Questions and comments: results[i].questions_comments_open
+    required: False
+    input type: area
+
+
+
+---
+#! Code block to set empty open responses to n/a if 'no interest' in the various questions
+code: |
+  if results[i].call_down_opp_somalia != 'Interest to participate':
+    results[i].proposed_role_somalia = 'n/a'
+  if results[i].call_down_opp_somalia != 'Interest to participate':
+    results[i].country_experiance_somalia = 'n/a'
+  if results[i].call_down_opp_somalia != 'Interest to participate':
+    results[i].thematic_area_somalia = 'n/a'
+depends on:
+  - results[i].call_down_opp_somalia
+
+---
+code: |
+  if results[i].call_down_opp_ocean != 'Interest to participate':
+    results[i].proposed_role_ocean = 'n/a'
+  if results[i].call_down_opp_ocean != 'Interest to participate':
+    results[i].country_experiance_ocean = 'n/a'
+  if results[i].call_down_opp_ocean != 'Interest to participate':
+    results[i].thematic_area_ocean = 'n/a'
+depends on:
+  - results[i].call_down_opp_ocean
+
+---
+code: |
+  if results[i].call_down_opp_gmap3 != 'Interest to participate':
+    results[i].proposed_role_gmap3 = 'n/a'
+  if results[i].call_down_opp_gmap3 != 'Interest to participate':
+    results[i].country_experiance_gmap3 = 'n/a'
+  if results[i].call_down_opp_gmap3 != 'Interest to participate':
+    results[i].thematic_area_gmap3 = 'n/a'
+depends on:
+  - results[i].call_down_opp_gmap3
+
+---
+code: |
+  if results[i].call_down_opp_simap != 'Interest to participate':
+    results[i].proposed_role_simap = 'n/a'
+  if results[i].call_down_opp_simap != 'Interest to participate':
+    results[i].country_experiance_simap = 'n/a'
+  if results[i].call_down_opp_simap != 'Interest to participate':
+    results[i].thematic_area_simap = 'n/a'
+depends on:
+  - results[i].call_down_opp_simap
+
+---
+code: |
+  if results[i].call_down_opp_nigeria != 'Interest to participate':
+    results[i].proposed_role_nigeria = 'n/a'
+  if results[i].call_down_opp_nigeria != 'Interest to participate':
+    results[i].country_experiance_nigeria = 'n/a'
+  if results[i].call_down_opp_nigeria != 'Interest to participate':
+    results[i].thematic_area_nigeria = 'n/a'
+depends on:
+  - results[i].call_down_opp_nigeria
+
+---
+code: |
+  if results[i].potential_conflicts != 'Yes':
+    results[i].potential_conflicts_open = 'n/a'
+depends on:
+  - results[i].potential_conflicts
+
+---
+#! Code neccesary for da table - its a way to stop the table for additional input. 
+code: |
+  results.there_is_another = False
+
+---
+#! reportAll code block nessecary for accurate communicaiton with Django, Wekan and Streamlit. 
+mandatory: True
+#! Data varible that need information wekan board and django database. Can also be populated with data that is collected from the interview and that is needed on the wekan board.
+code: |
+  data = {"board_id": "6nGdLKJFbBSRjcj96",
+    "list_id": "373EY3JxaCXfoTY8f",
+    "swimlane_id":   "RJ9ZqrKaPJwsLJLDQ",
+    "author_id": "qdqgYb4n7h4rYH8S9",
+    "title": str(df.organisation_name[0]),
+    "poster_email": "jonas@davcon.se",
+    "poster_listening": True,
+    "df_unpacked": df.to_dict()}
+      
+  # Outgoing email for notifiations.     
+  data["email_from"] = 'info@reportall.se'
+
+
+    # Email compose for outgoing email.
+  data["email_body"]  = "Dear recipient, <br> <br> This is an automated confirmation message from Niras GEMFA process and relates to {}. <br>Your case will be handled asap.<br>".format(
+      data["title"])
+  
+  # Description section in the wekan board - need to be composed with markdown and be populated with data from the interview.
+  data['description'] = "**Description:** \n The name of the organisation is: {}. \n\n Interest for the following tenders have been confirmed: \n \n **Somalia**  \n  Interest: {}  \n Role: {}  \n Country experiance: {}  \n Thematic experiance: {}  \n \n **OCPP**  \n  Interest: {}  \n Role: {}  \n Country experiance: {}  \n Thematic experiance: {}  \n \n **GMAP 3**  \n  Interest: {}  \n Role: {}  \n Country experiance: {}  \n Thematic experiance: {}  \n \n **SIMAP**  \n  Interest: {}  \n Role: {}  \n Country experiance: {}  \n Thematic experiance: {}  \n \n **NPM**  \n  Interest: {}  \n Role: {}  \n Country experiance: {}  \n Thematic experiance: {}  \n \n".format(
+    str(df.organisation_name[0]),
+    str(df.call_down_opp_somalia[0]),
+    str(df.proposed_role_somalia[0]),
+    str(df.country_experiance_somalia[0]),
+    str(df.thematic_area_somalia[0]),
+    str(df.call_down_opp_ocean[0]),
+    str(df.proposed_role_ocean[0]),
+    str(df.country_experiance_ocean[0]),
+    str(df.thematic_area_ocean[0]),
+    str(df.call_down_opp_gmap3[0]),
+    str(df.proposed_role_gmap3[0]),
+    str(df.country_experiance_gmap3[0]),
+    str(df.thematic_area_gmap3[0]),
+    str(df.call_down_opp_simap[0]),
+    str(df.proposed_role_simap[0]),
+    str(df.country_experiance_simap[0]),
+    str(df.thematic_area_simap[0]),
+    str(df.call_down_opp_nigeria[0]),
+    str(df.proposed_role_nigeria[0]),
+    str(df.country_experiance_nigeria[0]),
+    str(df.thematic_area_nigeria[0]),
+    )
+
+  #! Send data to Django
+  reponse_status_code = store_interview_results(data)
+
+
+---
+#! Response report before submission
+mandatory: True
+
+question: |
+  Summary of your responses. Please reivew before submission to Niras.
+
+subquestion: | 
+  
+  **CATEGORY**            | **RESPONES**
+  ------------------------|----------------------
+  Organisation            | ${ df.organisation_name[0]}
+  Interest Somalia        | ${ df.call_down_opp_somalia[0]}
+  Interest OCPP           | ${ df.call_down_opp_ocean[0]}
+  Interest GMAP 3         | ${ df.call_down_opp_gmap3[0]}  
+  Interest SIMAP          | ${ df.call_down_opp_simap[0]}
+  Interest NPM            | ${ df.call_down_opp_nigeria[0]}
+
+
+
+buttons:
+  - Done: exit
+    url: https://www.niras.com/sectors/development-consulting/
+
+
+---

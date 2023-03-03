@@ -1,0 +1,218 @@
+#! files with varbles and settings for the intervies. Varibles contain various response scales and data storage framework. Settings holds information on common terms, styling and layout (eg link to CSS sheet or bootstrap) etc..
+include:
+  - variables.yml
+  - settings.yml
+---
+#! Pyton files stored as da modules. Post.py dictates how data is stored and sent to Django db. Create_df.py is a script that transform da list to pandas df. 
+modules:
+  - .post
+  - .create_df
+  - .parse_email
+
+---
+#! Pandas df is created with the da table 
+mandatory: True
+code: |
+  df = create_df(tender_results_table) #this is initatied in survey_variables - uses a DA table block but do not show it to the respondents.
+  tender_results.object_type = Thing
+  tender_results.there_are_any = True
+
+---
+#! First question block - NOTE that there has to be a varible "name"
+mandatory: True
+decoration: niras_logo
+question: |
+  <br><br>GEMFA Tenders Internal Form for Call-down Opportunity<br>
+subquestion: |
+  Please fill in the form with the requested information. <br>
+  <hr>
+fields:
+  - note: <b>1. Enter the name of the tender:</b>
+  - Tender name: tender_results[i].name.text
+    required: True
+
+  - note: <hr>
+
+  - note: <b>2. Description of the tender:</b>
+  - Description of tender: tender_results[i].description_tender
+    required: False
+    input type: area
+
+  - note: <hr>
+
+  - note: <b>3. Select consortium partners to be notified.<br><br> Note that this list **sends to Primary-, Secondary- and Other Contact**. Tier 1 partners are preselected:</b>
+  - Consortium partners: tender_results[i].consortium_partners
+    datatype: checkboxes
+    required: False
+    choices:
+      - Mott MacDonald
+      - Forcier Consulting
+      - Genesis Analytics
+      - 3ie
+      - OTT Consulting
+      - Bath Social & Development Research
+      - Social Terrain Ventures
+      - Valid Evaluations
+      - International Economics Consulting
+      - CLEAR-AA
+      - DevLearn Consultancy
+      - Viamo
+      - Sambodhi Research and Communications
+      - PEMconsult
+      - Scriptoria
+      - PDRI-DevLab
+      - OCO Global
+      - Dev Café
+      - Halcyon
+      - Tandem
+      - EnCompass LLC
+      - Quaking Aspen
+    default:
+      code: |
+        ["Mott MacDonald", "Forcier Consulting", "Genesis Analytics"]
+
+  - note: <b>4. Select consortium partners to be notified.<br><br> Note that this list **sends to Board Members abd QA contacts**. Tier 1 partners are preselected:</b>
+  - Consortium partners: tender_results[i].consortium_partners_bqa
+    datatype: checkboxes
+    required: False
+    choices:
+      - Mott MacDonald
+      - Forcier Consulting
+      - Genesis Analytics
+      - 3ie
+      - OTT Consulting
+      - Bath Social & Development Research
+      - Social Terrain Ventures
+      - Valid Evaluations
+      - International Economics Consulting
+      - CLEAR-AA
+      - DevLearn Consultancy
+      - Viamo
+      - Sambodhi Research and Communications
+      - PEMconsult
+      - Scriptoria
+      - PDRI-DevLab
+      - OCO Global
+      - Dev Café
+      - Halcyon
+      - Tandem
+      - EnCompass LLC
+      - Quaking Aspen
+    default:
+      code: |
+        ["Mott MacDonald", "Forcier Consulting", "Genesis Analytics"]
+      
+
+
+---
+#### Load up foto or documento
+mandatory: True
+question: |
+  Please load up the main tender document:
+back button: True
+fields:
+  - Tender: results.document
+    datatype: file
+    required: False
+validation code: |
+  if results.document and results.document.size_in_bytes() > 20000000:
+    validation_error("The file is too big!  Upload a smaller file.")
+
+
+---
+#! create email lists for outgoing email based on multible choice questions above. 
+code: |
+  partner_emails = parse_emails(partner_recipient,df.consortium_partners[0])
+  bqa_emails = parse_emails(bqa_recipient,df.consortium_borads_qa[0])
+  
+
+---
+#! Code neccesary for da table - its a way to stop the table for additional input. 
+code: |
+  tender_results.there_is_another = False
+
+---
+#! reportAll code block nessecary for accurate communicaiton with Django, Wekan and Streamlit. 
+mandatory: True
+#! Data varible that need information wekan board and django database. Can also be populated with data that is collected from the interview and that is needed on the wekan board.
+code: |
+  #! handle uploaded foto/document
+  if results.document:
+    filepath = results.document.path()
+  else:
+    filepath = None
+  
+  tender_name = str(df.tender_name[0])
+
+  data = {"board_id": "EQ8mfS24p9Px3nfLW",
+  "list_id": "7rwD3QasrgkZdtXp3",
+  "swimlane_id": "YyF5wZgdaKGNeBrjE",
+  "author_id": "iecofWjbtYHw9M3gZ",
+  "title": f"GEMFA - {tender_name}",
+  "name": tender_name,
+  "poster_email": "gustav@davcon.se",
+  "filepath": filepath,
+  "poster_listening": True,
+  "df_tenders": df.to_dict(),
+  "email_recipients": []}
+  # list(partner_emails.union(bqa_emails))
+
+  # Define hostname 
+  django_hostname = os.environ["DJANGOHOSTNAME"]
+  docassemble_hostname = os.environ["DAHOSTNAME"]
+
+  # Outgoing email for notifiations.     
+  data["email_from"] = "info@reportall.se"
+  file_url = f"https://{django_hostname}/webhooks/download/?id=TICKET_ID"  # Location of file 
+
+  # Create link with the name of the tender that is registered by niras
+  partner_url = f"http://{docassemble_hostname}/interview?i=docassemble.playground3nirasgemfa%3Ainit_partners.yml&tender="+str(df.tender_name[0])
+
+  #! Email compose for outgoing email.
+  data["email_body"]  = "Dear recipient, <br> <br> This is an automated message from NIRAS GEMFA Consortium Management Team and relates to an incoming tender - {}. <br> <br> Tender document:  **<a href='{}'>{}</a>**. <br> <br> Please follow this link and record your interest to be part of Niras proposal **<a href='{}'>Tender interest form</a>**.<br> <br> Please coordinate with your colleagues and make sure only send in one response from your company. <br> <br> Best regards <br> NIRAS GEMFA Consortium Management Team.".format(
+      data["name"],
+      file_url,
+      tender_name,
+      partner_url)
+
+
+  # Description section in the wekan board - need to be composed with markdown and be populated with data from the interview.
+  data['description'] = "**Description:** \n The name of the tender is: {}. \n\n Tender description: {}. \n\n Notified partners: {}.  \n\n Notified board and QA: {}.  \n\n Tender link {}.".format(
+    str(df.tender_name[0]),
+    str(df.description_tender[0]),
+    str(df.consortium_partners[0]), 
+    str(df.consortium_borads_qa[0]),
+    results.document)
+ 
+  #! send data to django
+  reponse_status_code = store_interview_results(data)
+
+
+---
+#! Response report before submission
+mandatory: True
+
+question: |
+  Summary of transcribed data.
+
+subquestion: | 
+  
+  **CATEGORY**            | **RESPONES**
+  ------------------------|----------------------
+  Tender name             | ${ df.tender_name[0]}
+  Description             | ${ df.description_tender[0]}
+  Notified partners       | ${ df.consortium_partners[0]}
+  Notified board and QA   | ${ df.consortium_borads_qa[0]}
+  Tender                  | ${ results.document }
+
+
+
+
+buttons:
+  - Done: exit
+    url: https://www.niras.com/sectors/development-consulting/
+
+
+---
+
+

@@ -1,0 +1,71 @@
+metadata:
+  title: |
+    Title of project
+  short title: |
+    Extra titke.
+  show login: False
+  description: |
+    Web application for [input]. 
+  authors:
+    - name: Gustav Engström and Jonas Norén
+      organization: dav|consulting
+  revision_date: 2023-02-03
+
+---
+#! image varibles are set here
+images:
+  'niras_logo': niras_logo.png
+
+---
+#! objects and entities
+mandatory: True
+code: |
+  entity_1 = "Norcon AB"
+---
+#! features for the survey are managed here
+features:
+  css: sds.css # local CSS pointer
+  popover trigger: hover # how to display interactive content/hyperlinks
+  #! Local CSS theme  
+  #css: sds.css
+  #! CSS Bootstrap theme
+  bootstrap theme: https://bootswatch.com/5/minty/bootstrap.min.css
+  navigation: False
+  progress bar: False
+  show progress bar percentage: False
+  progressive: True
+  inverse navbar: False
+  hide navbar: True
+
+---
+#! all objects for the interview are store with this da objective (simlar to python list).
+objects:
+  - tender_results: DAList
+  - results: DAList  
+
+---
+#! Sections to be used in interview.
+#sections:
+#  - Introduction
+#  - Basic information 
+#  - Principles
+#  - Core
+#  - Stakeholders
+#  - Priorities
+#  - Report
+#  - End
+  
+#---
+#! Terms to be called in interview.
+#terms:
+#  test_term_1: |
+#    Text.
+#  test_term_2: |
+#    Text. 
+#
+#---
+
+
+
+
+  

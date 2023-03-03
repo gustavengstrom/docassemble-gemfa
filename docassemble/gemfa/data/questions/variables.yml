@@ -1,0 +1,56 @@
+---
+#! designed survey scales and response alternatives. 
+mandatory: True
+code: |
+  from collections import OrderedDict
+
+  test_dropdown = OrderedDict([ ('test 1', 'test 1'),('test 2', 'test 1'),])
+
+  consortium_dropdown = OrderedDict([ ('gustav@davcon.se', 'Davcon AB'), ('jonas.noren@norcon.se', 'Norcon AB'), ])
+
+
+---
+#! Usage and storage of interview data in da list and da table - this is converted to df in the interview. All varibles need to be added here with name for the df. 
+table: tender_results_table
+rows: tender_results
+show: True
+require gathered: True
+columns:
+  - tender_name: row_item.name
+  - description_tender: row_item.description_tender
+  - consortium_partners: row_item.consortium_partners.true_values()
+  - consortium_borads_qa: row_item.consortium_partners_bqa.true_values()
+
+---
+#! Usage and storage of interview data in da list and da table - this is converted to df in the interview. All varibles need to be added here with name for the df. 
+table: partner_results_table
+rows: results
+show: True
+require gathered: True
+columns:
+  - organisation_name: row_item.name
+  - call_down_opp_somalia: row_item.call_down_opp_somalia
+  - proposed_role_somalia: row_item.proposed_role_somalia
+  - country_experiance_somalia: row_item.country_experiance_somalia
+  - thematic_area_somalia: row_item.thematic_area_somalia  
+  - call_down_opp_ocean: row_item.call_down_opp_ocean
+  - proposed_role_ocean: row_item.proposed_role_ocean
+  - country_experiance_ocean: row_item.country_experiance_ocean
+  - thematic_area_ocean: row_item.thematic_area_ocean
+  - call_down_opp_gmap3: row_item.call_down_opp_gmap3
+  - proposed_role_gmap3: row_item.proposed_role_gmap3
+  - country_experiance_gmap3: row_item.country_experiance_gmap3
+  - thematic_area_gmap3: row_item.thematic_area_gmap3
+  - call_down_opp_simap: row_item.call_down_opp_simap
+  - proposed_role_simap: row_item.proposed_role_simap
+  - country_experiance_simap: row_item.country_experiance_simap
+  - thematic_area_simap: row_item.thematic_area_simap 
+  - call_down_opp_nigeria: row_item.call_down_opp_nigeria
+  - proposed_role_nigeria: row_item.proposed_role_nigeria
+  - country_experiance_nigeria: row_item.country_experiance_nigeria
+  - thematic_area_nigeria: row_item.thematic_area_nigeria
+  - potential_conflicts: row_item.potential_conflicts
+  - potential_conflicts_open: row_item.potential_conflicts_open
+  - questions_comments_open: row_item.questions_comments_open 
+
+---
